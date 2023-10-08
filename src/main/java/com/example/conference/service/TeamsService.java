@@ -2,17 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.conferenceisu.service;
+package com.example.conference.service;
 
-import com.example.conferenceisu.forms.RegistrationForm;
-import com.example.conferenceisu.model.Team;
-import com.example.conferenceisu.model.UserInTeam;
-import com.example.conferenceisu.repository.TeamsRepository;
-import com.example.conferenceisu.repository.UserInTeamRepository;
-import com.example.conferenceisu.repository.UserRepository;
-import com.example.conferenceisu.user.Role;
-import com.example.conferenceisu.user.User;
+import com.example.conference.forms.RegistrationForm;
+import com.example.conference.model.Team;
+import com.example.conference.model.UserInTeam;
+import com.example.conference.repository.TeamsRepository;
+import com.example.conference.repository.UserInTeamRepository;
+import com.example.conference.repository.UserRepository;
+import com.example.conference.user.Role;
+import com.example.conference.user.User;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import org.springframework.cglib.proxy.Proxy;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,7 +40,17 @@ public class TeamsService {
     }
     
     public List<Team> findTeamsByUsername(String username){
-        return  teamsRepo.findDistinctByUserInTeam_UserId( userRepo.findByUsername(username).get().getId());
+
+        User user = userRepo.findByUsername(username).get();
+        List<Team> teams = teamsRepo.findDistinctByUserInTeam_UserId(user.getId());
+        List<Team> activeTeams = new ArrayList<>();
+        for (Team team: teams){
+            Set<UserInTeam> st = team.getUserInTeam();
+            for (UserInTeam userInTeam:st){
+                if (userInTeam.getUser().equals(user) && userInTeam.isActive())activeTeams.add(team);
+            }
+        }
+        return activeTeams;
     }
     
     public Team saveTeam(Team team,User user){
@@ -45,6 +60,12 @@ public class TeamsService {
         userInTeamRepo.save(UIT);
         
         return team;
+    }
+
+    public void inviteUser(Team team,User user){
+        UserInTeam UIT = new UserInTeam(user,team);
+        UIT.setIsActive(false);
+        userInTeamRepo.save(UIT);
     }
     
 }

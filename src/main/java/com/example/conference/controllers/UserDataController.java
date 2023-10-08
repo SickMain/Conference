@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/springframework/Controller.java to edit this template
  */
-package com.example.conferenceisu.controllers;
+package com.example.conference.controllers;
 
-import com.example.conferenceisu.repository.UserRepository;
-import com.example.conferenceisu.user.User;
+import com.example.conference.repository.UserRepository;
+import com.example.conference.user.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;

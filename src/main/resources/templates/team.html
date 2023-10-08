@@ -3,12 +3,19 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="${team.name}">teamname</title>
     <script th:src="@{/js/jquery-3.6.0.js}"></script>
-    <script th:src="@{/js/profile.js}"></script>
+    <script th:src="@{/js/handle.js}"></script>
+    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js" ></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
     <link rel="stylesheet" th:href="@{/css/profile.css}"/>
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -42,13 +49,98 @@
         </div>
     </div>
 </nav>
-<div class="container">
-    <div class="col">
-        <label th:text="${team.name}"></label>
-    </div>
-    <div class="col">
-        <label th:text="${team.name}"></label>
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Пригласить в команду</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input p-2" >
+                    <label class="col">Найти пользователя</label>
+                    <div class="container">
+                        <form id='userSearchForm' method="POST" th:action="@{/profile/}">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                            <input id="teamId" th:value="${team.id}" type="hidden">
+                            <input  id="w-input-search"  type="text" class="col-9"/><div id="ex"></div><div class="input-append align-items-sm-start container col-auto"></div>
+                            <button class="btn btn-outline-primary p-2 col-auto" type="submit">Пригласить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>-->
+        </div>
     </div>
 </div>
+<div class="container row">
+    <div class="col">
+        <label th:text="${team.name}"></label>
+    </div>
+    <div class="col">
+        <div class="row">
+            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#exampleModal">
+                Пригласить в команду
+            </button>
+        </div>
+        <table class="">
+            <tr class="row  align-items-center border border-black text-center"><td class="col text-center">Пользователь</td><td class="col text-center">Статус</td><td class="col" >Добавим</td></tr>
+            <tr id="leaderInfo" class="row border border-black  align-items-center">
+                <td class="col row container justify-content-center align-items-center">
+                    <img th:if="${team.leader.profileImg}" class="img-thumbnail row " th:src="@{${'/img/profiles/' + team.leader.profileImg}}"/>
+                    <img th:unless="${team.leader.profileImg}" class="img-thumbnail row " th:src="@{'/img/profiles/unnamed.jpg'}"/>
+                    <label class="">Лидер - <a class="" th:text="${team.leader.username}" th:href="@{${'/profile/' + team.leader.username }}"/></label>
+                    <label th:text="${team.leader.secondName + ' ' + team.leader.firstName}" class=""></label>
+
+                </td>
+                <td class="col row container justify-content-center align-items-center ">
+                    <label class="text-center">Активный</label>
+                </td>
+                <td class="col row">
+                </td>
+            </tr>
+            <tr  th:each="userInTeam : ${team.getUsersWithoutLeader()}" class="row border border-black  align-items-center">
+                <td class="col row container justify-content-center align-items-center">
+                    <img th:if="${userInTeam.user.profileImg}" class="img-thumbnail " th:src="@{${'/img/profiles/' + userInTeam.user.profileImg}}"/>
+                    <img th:unless="${userInTeam.user.profileImg}" class="img-thumbnail " th:src="@{'/img/profiles/unnamed.jpg'}"/>
+                    <div class="container  justify-content-center align-items-center">
+                        <div class="row justify-content-center align-items-center">
+                            <label class="col text-center"><a class="" th:text="${userInTeam.user.username}" th:href="@{${'/profile/' + userInTeam.user.username }}" /></label>
+                        </div>
+                        <div class="row">
+                            <label class="col text-center" th:text="${userInTeam.user.firstName + ' ' + userInTeam.user.secondName}"></label>
+                        </div>
+                    </div>
+                    </td>
+                <td class="col row container justify-content-center align-items-center ">
+                    <label class="text-center" th:if="${userInTeam.isActive()}">Активный</label>
+                    <label class="text-center" th:unless="${userInTeam.isActive()}">Приглашен</label>
+                </td>
+                <td class="col row">
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
 </body>
 </html>
+<style>
+    .input-append {
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+        /* add padding to account for vertical scrollbar */
+        max-height: 150px;
+
+    }
+</style>

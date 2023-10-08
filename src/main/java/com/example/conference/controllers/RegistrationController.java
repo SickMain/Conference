@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/springframework/Controller.java to edit this template
  */
-package com.example.conferenceisu.controllers;
+package com.example.conference.controllers;
 
 
-import com.example.conferenceisu.forms.RegistrationForm;
-import com.example.conferenceisu.repository.UserRepository;
-import com.example.conferenceisu.user.Role;
-import com.example.conferenceisu.user.User;
+import com.example.conference.forms.RegistrationForm;
+import com.example.conference.repository.UserRepository;
+import com.example.conference.user.Role;
+import com.example.conference.user.User;
 import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,7 +42,7 @@ public class RegistrationController {
     private PasswordEncoder PasswordEncoder;
    
     @ModelAttribute("registrationForm")
-    public RegistrationForm mform(){
+    public RegistrationForm form(){
         return new RegistrationForm();
     }
     
@@ -55,12 +55,12 @@ public class RegistrationController {
     public String processRegistration( @Valid @ModelAttribute RegistrationForm registrationForm, BindingResult errors,Model model){
         if(errors.hasErrors()) return "registration";
         else
-        if(!UserRepo.findByUsername(registrationForm.getUsername()).isEmpty()){
+        if(UserRepo.findByUsername(registrationForm.getUsername()).isPresent()){
             model.addAttribute("ExistingUsernameError","Такой адрес уже зарегистрирован");
             return "registration";
         }
         else
-        if(!UserRepo.findByEmail(registrationForm.getEmail()).isEmpty()){
+        if(UserRepo.findByEmail(registrationForm.getEmail()).isPresent()){
             model.addAttribute("ExistingEmailError","Такой адрес уже зарегистрирован");
             return "registration";
         }

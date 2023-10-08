@@ -2,15 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.conferenceisu.configuration;
+package com.example.conference.configuration;
 
 
-import com.example.conferenceisu.repository.UserRepository;
-import com.example.conferenceisu.user.User;
+import com.example.conference.repository.UserRepository;
+import com.example.conference.user.User;
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Optional;
+
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.boot.autoconfigure.sendgrid.SendGridProperties;
+import org.springframework.cglib.proxy.Proxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.BeanDefinitionDsl;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,7 +40,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -55,6 +61,7 @@ public class SecurityConfig {
                 .requestMatchers("/conferences").hasRole("USER")
                 .requestMatchers("/", "/**").permitAll()
                 );
+
 
         return http.build();
     }

@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package com.example.conferenceisu.repository;
+package com.example.conference.repository;
 
 
 import java.util.List;
 import java.util.Optional;
 
-import com.example.conferenceisu.user.User;
+import com.example.conference.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

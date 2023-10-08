@@ -2,14 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.conferenceisu.user;
+package com.example.conference.user;
 
-import com.example.conferenceisu.forms.RegistrationForm;
-import com.example.conferenceisu.model.Team;
-import com.example.conferenceisu.model.UserInTeam;
-import com.example.conferenceisu.repository.UserRepository;
-import com.example.conferenceisu.user.Role;
-import com.example.conferenceisu.user.User;
+import com.example.conference.forms.RegistrationForm;
+import com.example.conference.model.Team;
+import com.example.conference.model.UserInTeam;
+import com.example.conference.repository.UserRepository;
+import com.example.conference.user.Role;
+import com.example.conference.user.User;
 import jakarta.persistence.*;
 
 import java.io.Serializable;

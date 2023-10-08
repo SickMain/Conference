@@ -66,9 +66,9 @@
                         <td th:if="${loged}" class="col">
                             <div th:each="teammate : ${team.userInTeam}" > 
                                 <div th:unless="${teammate.isActive}" class="align-items-center justify-content-center row">
-                                <div th:if="${teammate.user.profileImg}"><img  id="Teammateimg"  class="img-thumbnail" th:src="@{${'/img/profiles/' + teammate.user.profileImg}}"/></div>
-                                <div th:unless="${teammate.user.profileImg}"><img id="Teammateimg"  class="img-thumbnail" th:src="@{/img/profiles/unnamed.jpg}" /></div>
-                                <div><a th:href="@{${'/profile/' + teammate.user.username }}" th:text="${teammate.user.username}" class=""/></div>
+                                <div th:if="${teammate.user.profileImg}" class="col"><img  id="Teammateimg"  class="img-thumbnail" th:src="@{${'/img/profiles/' + teammate.user.profileImg}}"/></div>
+                                <div th:unless="${teammate.user.profileImg}" class="col"><img id="Teammateimg"  class="img-thumbnail" th:src="@{/img/profiles/unnamed.jpg}" /></div>
+                                <div class="col"><a th:href="@{${'/profile/' + teammate.user.username }}" th:text="${teammate.user.username}" class=""/></div>
                                 </div>
                             </div>
                         </td>

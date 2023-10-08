@@ -1,5 +1,5 @@
 
-package com.example.conferenceisu.configuration;
+package com.example.conference.configuration;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
