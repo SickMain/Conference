@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <title>Новая команда</title>
+        <script th:src="@{/js/jquery-3.6.0.js}"></script>
+        <script th:src="@{/js/profile.js}" ></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
+        <link rel="stylesheet" th:href="@{/css/profile.css}"/>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <img class=" text-light logo_imei" height="55" width="55" src="/img/content/logo_isu.png"/>
+            <div class="collapse container-fluid navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item border-bottom offset-md-1">
+                        <a class="nav-link" th:href="@{/}">Главное</a>
+                    </li>
+                    <li class="nav-item border-bottom offset-md-1">
+                        <a class="nav-link" th:href="@{/contests}">Конференции</a>
+                    </li>
+                    <li class="nav-item border-bottom offset-md-1">
+                        <a class="nav-link" th:href="@{/api/info}">API</a>
+                    </li>
+                </ul>
+                <div class="navbar-light container-sm  ml-auto row">
+                    <a sec:authorize="!isAuthenticated()" class="nav-link" th:href="@{/login}">Войти</a>
+                    <div id="user" class="col"  sec:authorize="hasRole('USER')"> 
+                        <div class="row">
+                            <a th:href="@{${'/profile/' +#authentication.principal.username }}">
+                                <img class="object-fit-contain border-black rounded-circle" th:if="${#authentication.principal.profileImg}" width="38px" height="38px" id="profileImgIcon" th:src="@{${'/img/profiles/' + #authentication.principal.profileImg}}"/>
+                            </a>
+                            <form method="POST" th:action="@{/logout}"> <input type="submit"  class="btn btn-link" value="Выйти"/></form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div id="newTeamForm" class="container d-flex align-items-center justify-content-center border border-black">
+            
+            <form method="POST" th:object="${newTeamForm}"> 
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                <label>Название команды:</label><br/>
+                <input type="text" th:field="*{name}" />
+                <input type="submit" value="Создать команду"/>
+            </form>
+        </div>
+    </body>
+</html>

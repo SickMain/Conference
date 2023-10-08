@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>registration</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <form method="POST" th:object="${registrationForm}" th:action="@{/registration}">
+        <label for="username">Enter username</label>
+        <input type="text" id="username" th:field="*{username}"/>
+        <span style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</span>
+        <span style="color: red" class="validationError" th:if="${ExistingUsernameError}" >ExistingUsername error</span><br/> 
+        <label for="email">Enter email</label>
+        <input type="email" id="email" th:field="*{email}"/>
+        <span style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}" >Email error</span>
+        <span style="color: red" class="validationError" th:if="${ExistingEmailError}" >ExistingEmail error</span><br/> 
+        <label for="password">Enter password</label>
+        <input type="password" id="password" th:field="*{password}"/>
+        <span style="color: red" class="validationError" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" >Password error</span><br/>
+        <label for="firstName">Enter firstName</label>
+        <input type="text" id="firstName" th:field="*{firstName}"/>
+        <span style="color: red" class="validationError" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" >firstName error</span><br/>
+        <label for="secondName">Enter secondName</label>
+        <input type="text" id="secondName" th:field="*{secondName}"/>
+        <span style="color: red" class="validationError" th:if="${#fields.hasErrors('secondName')}" th:errors="*{secondName}" >secondName error</span><br/>
+        <input type="submit" value="register"/>
+        </form>
+    </body>
+</html>
