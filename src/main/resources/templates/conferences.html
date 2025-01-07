@@ -1,15 +1,77 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>yeeeeeeeeeee</div>
-    </body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/basics :: basicHead (title= 'conferences')}">
+<body>
+<nav th:replace="~{fragments/basics :: navbar}"></nav>
+<div class="container p-3">
+    <div sec:authorize="hasAnyRole('ADMIN')">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Добавить соревнование</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input p-2" >
+                        <div class="container mb-3">
+                            <form id='userSearchForm' method="GET" th:action="@{/contests/new}">
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                                <div class="form-group mb-3">
+                                    <label>Количество критериев оценивания:</label><br>
+                                    <input type="number" min="1" max="3" value="1" name="criteriaNum">
+                                </div>
+                                <button class="btn btn-outline-primary p-2 col-auto" type="submit">Продолжить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <button type="button" class="btn btn-link shadow-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Добавить соревнование
+        </button>
+    </div>
+    </div>
+    <div>
+        <div th:each="conference : ${conferencePage}">
+            <div class="card mb-3">
+                <div class="card-body container">
+                    <div sec:authorize="hasAnyRole('ADMIN')" class="text-end">
+                        <a href=""><i class="fa-solid fa-gears"></i></a>
+                    </div>
+                    <a th:href="@{'/contests/view/'+${conference.getId()}}">
+                        <h5 class="card-title" th:text="${conference.name}"></h5>
+                    </a>
+                    <p class="card-text" th:text="${conference.description}"></p>
+                    <div style="width: 300px; --bs-bg-opacity: .85;" class="text-white  rounded text-center"
+                         th:classappend="${conference.registrationClosing.isBefore(currentDateTime)} ? 'bg-danger' : 'bg-success' ">
+                        <small class="text-white" th:text="${conference.registrationClosing.isBefore(currentDateTime)} ? 'Регистрация закрылась:' : 'Регистрация открыта до:'"> Закрытие регистрации:</small>
+                        <label class="text-white" th:text="${conference.registrationClosing.toLocalDate()}"></label>
+                        <label class="text-white" th:text="${conference.registrationClosing.toLocalTime()}"></label>
+                    </div>
+                </div>
+        <img height="200px" th:src="@{/img/content/Blue_20Poly1.png}" class="card-img-bottom" alt="...">
+            </div>
+        </div>
+    </div>
+</div>
+<nav id="pager" aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${currentPage <= 0} ? disabled : '' ">
+            <a class="page-link"  th:href="@{'/contests?currentPage=' + ${currentPage - 1}+'#pager'}">Назад</a>
+        </li>
+        <li th:each="page : ${pager.getAllPages()}" th:classappend="${page == currentPage} ? 'active' : ''" class="page-item"><a class="page-link" th:text="${page+1}" th:href="@{'/contests?currentPage=' + ${page}+'#pager'}"></a></li>
+        <li class="page-item" th:classappend="${pager.totalPages <= currentPage+1} ? disabled : '' ">
+            <a class="page-link "   th:href="@{'/contests?currentPage=' + ${currentPage + 1}+'#pager'}">Дальше</a>
+        </li>
+    </ul>
+</nav>
+<div th:replace="~{fragments/basics :: alerts}"></div>
+</body>
 </html>

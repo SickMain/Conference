@@ -4,12 +4,9 @@
  */
 package com.example.conference.user;
 
-import com.example.conference.forms.RegistrationForm;
-import com.example.conference.model.Team;
-import com.example.conference.model.UserInTeam;
-import com.example.conference.repository.UserRepository;
-import com.example.conference.user.Role;
-import com.example.conference.user.User;
+import com.example.conference.service.UserService;
+import com.example.conference.teams.Team;
+import com.example.conference.teams.UserInTeam;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -18,7 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import org.hibernate.engine.internal.Cascade;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -27,36 +25,8 @@ import org.springframework.security.core.userdetails.UserDetails;
  * @author user
  */
 @Entity
-@Table(name = "WebUser")
+@Table(name = "web_user")
 public class User implements UserDetails, Serializable {
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final User other = (User) obj;
-        if (!Objects.equals(this.firstName, other.firstName)) {
-            return false;
-        }
-        if (!Objects.equals(this.secondName, other.secondName)) {
-            return false;
-        }
-        if (!Objects.equals(this.username, other.username)) {
-            return false;
-        }
-        if (!Objects.equals(this.email, other.email)) {
-            return false;
-        }
-        return Objects.equals(this.id, other.id);
-    }
 
     public User() {
         this.id = null;
@@ -76,9 +46,10 @@ public class User implements UserDetails, Serializable {
         this.username = username;
         
     }
-    
+
+
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
     
     private final String firstName;
@@ -95,6 +66,7 @@ public class User implements UserDetails, Serializable {
 
     
     public String getProfileImg() {
+        if (profileImg == null) return "unnamed.jpg";
         return profileImg;
     }
 
@@ -104,29 +76,17 @@ public class User implements UserDetails, Serializable {
     
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            
             name = "web_user_roles",
             joinColumns = @JoinColumn(name = "users_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id")
     )
     private List<Role> roles;
-    
-    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
-    Set <UserInTeam> userInTeam = new HashSet<>();
 
-    @OneToMany(mappedBy = "leader",fetch = FetchType.EAGER)
-    Set<Team> teams = new HashSet<>();
+
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
-    public Set<Team> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(Set<Team> teams) {
-        this.teams = teams;
-    }
 
     public List<Role> getRoles() {
         return roles;
@@ -155,18 +115,14 @@ public class User implements UserDetails, Serializable {
     public String getFirstName() {
         return firstName;
     }
+
+    public String getFullName(){
+        return firstName + " " + secondName;
+    }
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
-    }
-
-    public Set<UserInTeam> getUserInTeam() {
-        return userInTeam;
-    }
-
-    public void setUserInTeam(Set<UserInTeam> userInTeam) {
-        this.userInTeam = userInTeam;
     }
 
     @Override
@@ -197,6 +153,38 @@ public class User implements UserDetails, Serializable {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, secondName, username, email);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        if (!Objects.equals(this.firstName, other.firstName)) {
+            return false;
+        }
+        if (!Objects.equals(this.secondName, other.secondName)) {
+            return false;
+        }
+        if (!Objects.equals(this.username, other.username)) {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        return Objects.equals(this.id, other.id);
     }
     
 }

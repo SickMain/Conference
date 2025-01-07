@@ -1,30 +1,50 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
  xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>registration</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    </head>
+<head th:replace="~{fragments/basics :: basicHead (title='Registration')}">
     <body>
-        <form method="POST" th:object="${registrationForm}" th:action="@{/registration}">
-        <label for="username">Enter username</label>
-        <input type="text" id="username" th:field="*{username}"/>
-        <span style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</span>
-        <span style="color: red" class="validationError" th:if="${ExistingUsernameError}" >ExistingUsername error</span><br/> 
-        <label for="email">Enter email</label>
-        <input type="email" id="email" th:field="*{email}"/>
-        <span style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}" >Email error</span>
-        <span style="color: red" class="validationError" th:if="${ExistingEmailError}" >ExistingEmail error</span><br/> 
-        <label for="password">Enter password</label>
-        <input type="password" id="password" th:field="*{password}"/>
-        <span style="color: red" class="validationError" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" >Password error</span><br/>
-        <label for="firstName">Enter firstName</label>
-        <input type="text" id="firstName" th:field="*{firstName}"/>
-        <span style="color: red" class="validationError" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" >firstName error</span><br/>
-        <label for="secondName">Enter secondName</label>
-        <input type="text" id="secondName" th:field="*{secondName}"/>
-        <span style="color: red" class="validationError" th:if="${#fields.hasErrors('secondName')}" th:errors="*{secondName}" >secondName error</span><br/>
-        <input type="submit" value="register"/>
-        </form>
+<nav th:replace="~{fragments/basics :: navbar}"></nav>
+<div class="card border-secondary position-absolute top-50 start-50 translate-middle" style="width: 400px">
+    <div class="card-header bg-primary rounded-top"></div>
+    <form method="POST" class="card-body" th:object="${registrationForm}" th:action="@{/registration}">
+
+        <div class="form-outline mb-4">
+            <label class="form-label" for="username">Имя пользователя</label>
+            <input class="form-control" type="text" id="username" th:field="*{username}"/>
+            <span style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</span>
+        </div>
+
+        <div class="form-outline mb-4">
+            <label class="form-label" for="email">Адрес электронной почты</label>
+            <input class="form-control" type="email" id="email" th:field="*{email}"/>
+            <span style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}" >Email error</span>
+        </div>
+
+        <div class="form-outline mb-4">
+            <label class="form-label" for="password">Пароль</label>
+            <input class="form-control" type="password" id="password" th:field="*{password}"/>
+            <span style="color: red" class="validationError"  th:if="${#fields.hasErrors('password')}" th:errors="*{password}" >Password error</span>
+        </div>
+
+        <div class="form-outline mb-4">
+            <label class="form-label" for="firstName">Имя</label>
+            <input class="form-control" type="text" id="firstName" th:field="*{firstName}"/>
+            <span style="color: red" class="validationError" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" >firstName error</span>
+        </div>
+
+        <div class="form-outline mb-4">
+            <label class="form-label" for="secondName">Фамилия</label>
+            <input class="form-control" type="text" id="secondName" th:field="*{secondName}"/>
+            <span style="color: red" class="validationError" th:if="${#fields.hasErrors('secondName')}" th:errors="*{secondName}" >secondName error</span>
+        </div>
+
+
+        <div class="row justify-content-center">
+            <input type="submit" class="btn btn-primary w-50  mb-4" value="Зарегистрироваться" />
+        </div>
+
+    </form>
+</div>
+<div th:replace="~{fragments/basics :: alerts}"></div>
     </body>
 </html>

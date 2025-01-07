@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/basics :: basicHead (title=${teamRecord.name})}">
+<body>
+<nav th:replace="~{fragments/basics :: navbar}"></nav>
+<div sec:authorize="hasRole('ADMIN')" class="modal fade" id="deleteTeam" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Дисквалифицировать команду</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input p-2">
+                    <div class="container mb-3">
+                        <label class="col">Вы уверены, что хотите дисквалифицировать команду?</label>
+                    </div>
+                    <div class="container mb-3">
+                        <form id='deleteTeamForm' method="POST" th:action="@{${'/team/record/disqualify/' + teamRecord.getId()}}">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                            <input type="hidden" name="conferenceId" th:value="${teamRecord.conference.id}"/>
+                            <button class="btn btn-outline-danger p-2 col-auto" type="submit">Подтвердить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="p-3">
+<div class="container border">
+    <div class="row mb-2">
+        <label class="text-primary  g-1">Название команды:</label>
+        <div>
+            <label th:text="${teamRecord.name}"></label>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <label class="text-primary  g-1">Состав:</label>
+        <ul class="list-group  w-auto">
+            <li th:each="userInTeam : ${teamUsersList}" class="list-group-item">
+                <div>
+                    <a th:href="@{${'/profile/' + userInTeam.username}}" th:text="${userInTeam.username}"></a>
+                    <label th:text="${'(' + userInTeam.getFullName() + ')'}"></label>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="row" sec:authorize="hasRole('ADMIN')">
+        <label class="text-primary g-1 ">Оценивание:</label>
+        <form method="post" th:action="@{${'/team/record/view/'+teamRecord.id}}" th:object="${criteriaMarks}">
+            <input type="hidden" th:field="*{conferenceId}">
+            <div class="form-outline py-1" th:each="criteriaMark,status :*{criteriaMarkSet}">
+                <input type="hidden" th:field="*{criteriaMarkSet[__${status.index}__].id}" >
+                <input type="hidden" th:field="*{criteriaMarkSet[__${status.index}__].criteria.id}">
+                <input type="hidden" th:field="*{criteriaMarkSet[__${status.index}__].teamRecord.id}">
+                <label th:text="${criteriaMark.criteria.name}"></label>
+                <input class="form-control w-auto" type="number" min="0" max="100" th:field="*{criteriaMarkSet[__${status.index}__].mark}">
+            </div>
+            <div class="py-3">
+            <input type="submit" class="btn btn-primary" value="Обновить">
+            </div>
+        </form>
+        <div class="mb-3">
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteTeam">
+                Дисквалифицировать команду
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+<div th:replace="~{fragments/basics :: alerts}"></div>
+</body>
+</html>
+<style>
+    .input-append {
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+        /* add padding to account for vertical scrollbar */
+        max-height: 150px;
+
+    }
+
+    .img-thumbnail {
+        display: flex;
+        object-fit: cover;
+        max-width: 200px;
+        max-height: 200px;
+    }
+</style>

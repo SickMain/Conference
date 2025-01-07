@@ -1,19 +1,34 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
- xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Login</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
-    </head>
-    <body>
-        <form method="POST" th:action="@{/login}" >
-        <label for="email">Enter email</label>
-        <input type="email" id="email" name="username"/><br/>
-        <label for="password">Enter password</label>
-        <input type="password" id="password" name="password"/><br/>
-        <input type="submit" value="Login"/>
-        </form>
-        <form method="GET" th:action="@{/registration}"> <input type="submit" value="Register"/></form>
-    </body>
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/basics :: basicHead (title='Login')}">
+<body>
+<nav th:replace="~{fragments/basics :: navbar}"></nav>
+<div class="card position-absolute border-secondary   top-50 start-50 translate-middle" style="width: 400px">
+    <div class="card-header bg-primary  rounded-top"></div>
+    <form method="POST" class="card-body " th:action="@{/login}">
+
+        <div class="form-outline mb-4">
+            <label class="form-label">Адрес электронной почты</label>
+            <input type="email" name="username" class="form-control"/>
+        </div>
+
+        <div class="form-outline mb-4">
+            <label class="form-label">Пароль</label>
+            <input type="password" name="password" class="form-control"/>
+
+        </div>
+
+        <div class="row justify-content-center">
+            <input type="submit" class="btn btn-primary w-50  mb-4" value="Вход"/>
+        </div>
+
+        <div class="text-center">
+            <label>Новенький?</label>
+            <a th:href="@{/registration}">Регистрация</a>
+        </div>
+    </form>
+</div>
+<div th:replace="~{fragments/basics :: alerts}"></div>
+</body>
 </html>

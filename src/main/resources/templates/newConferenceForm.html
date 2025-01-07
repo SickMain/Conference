@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/basics :: basicHead (title= 'new conference')}">
+<body>
+<nav th:replace="~{fragments/basics :: navbar}"></nav>
+<div class="card border-secondary position-absolute top-50 start-50 translate-middle" style="width: 600px">
+    <div class="card-header bg-primary rounded-top"></div>
+    <form method="post" class="card-body" th:action="@{/contests/new/proceed}" th:object="${conferenceForm}">
+        <div class="form-outline mb-4">
+            <label>Название</label><br>
+            <input class="form-control" size="55" type="text" th:field="*{name}">
+            <span style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">name error</span>
+        </div>
+        <div class="form-outline mb-4">
+            <label>Закрытие регистрации</label><br>
+            <input class="form-control"  type="datetime-local" th:min="${currentDateTime}" th:field="*{registrationEnd}" required>
+            <span style="color: red" th:if="${#fields.hasErrors('registrationEnd')}" th:errors="*{registrationEnd}">registration end error</span>
+        </div>
+        <div class="form-outline mb-4">
+            <label>Описание</label><br>
+            <textarea style="resize: none" class="form-control" rows="5" cols="65" th:field="*{description}"></textarea>
+            <span style="color: red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">description error</span>
+        </div>
+
+        <div class="form-outline mb-4" th:each="criteria, itemStat : *{criteriaList}">
+                <label th:text="'Критерий ' + ${itemStat.index+1}"></label><br>
+                <input class="form-control" type="text" size="25" th:field="*{criteriaList[__${itemStat.index}__].name}">
+        </div>
+        <div class="row justify-content-center">
+            <input type="submit" class="btn btn-primary w-50  mb-4" value="Подтвердить" />
+        </div>
+    </form>
+</div>
+</div>
+</div>
+<div th:replace="~{fragments/basics :: alerts}"></div>
+</body>
+</html>

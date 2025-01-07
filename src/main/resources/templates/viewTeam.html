@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/basics :: basicHead (title=${team.name})}">
+<body>
+<nav th:replace="~{fragments/basics :: navbar}"></nav>
+
+<div class="container-fluid row">
+
+    <div class="col-5">
+        <label th:text="${team.name}"></label>
+    </div>
+    <div class="col-5">
+        <div th:if="${canEditTeam}" class="row col">
+            <div>
+            <a class="btn btn-link " th:href="@{${'/teams/edit/'+ team.getId()}}">Изменить команду</a>
+            </div>
+        </div>
+        <div th:if="${canLeaveTeam}" class="row col">
+            <form method="POST" th:action="@{${'/teams/leave/' + team.getId()}}">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                <button class="btn btn-link text-danger" type="submit">Покинуть команду</button>
+            </form>
+        </div>
+        <table class="">
+            <tr class="  align-items-center border border-black text-center"><td class="col text-center">Состав</td></tr>
+            <tr id="leaderInfo" class=" border border-black   align-items-center">
+                <td class="  container justify-content-center align-items-center">
+                    <img class="img-thumbnail   " th:src="@{${'/img/profiles/' + team.leader.getProfileImg()}}"/>
+                    <label class=" ">Лидер - <a class="" th:text="${team.leader.username}" th:href="@{${'/profile/' + team.leader.username }}"/></label><br>
+                    <label th:text="${team.leader.secondName + ' ' + team.leader.firstName}" class=" "></label>
+                </td>
+            </tr>
+            <tr  th:each="userInTeam : ${team.getActiveUsersWithoutLeader()}" class=" border border-black  align-items-center">
+                <td th:if="${userInTeam.isActive()}" class="container justify-content-center align-items-center">
+                    <img class="img-thumbnail " th:src="@{${'/img/profiles/' + userInTeam.user.getProfileImg()}}"/>
+                    <label class=" text-center"><a class="" th:text="${userInTeam.user.username}" th:href="@{${'/profile/' + userInTeam.user.username }}" /></label><br>
+                    <label class=" text-center" th:text="${userInTeam.user.secondName + ' ' + userInTeam.user.firstName}"></label>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/basics :: alerts}"></div>
+</body>
+</html>
+<style>
+    .input-append {
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+        /* add padding to account for vertical scrollbar */
+        max-height: 150px;
+
+    }
+    .img-thumbnail{
+        display: flex;
+        object-fit: cover;
+        max-width: 200px;
+        max-height: 200px;
+    }
+</style>

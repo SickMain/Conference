@@ -1,0 +1,38 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 23 авг. 2023 г., 10:09:18
+    Author     : user
+*/
+
+#profilePicture {
+
+
+}
+#img {
+    display: flex;
+    object-fit: cover;
+    max-width: 300px;
+    max-height: 300px;
+}
+
+#change-title-photo-form{
+    display: none;
+}
+
+#delete-title-photo-form{
+    display: none;
+}
+
+
+
+/*#userBox{*/
+/*    border: 1px solid #b9b9b9;*/
+/*    color: #0a58ca;*/
+/*}*/
+
+#userData{
+ border: 1px solid #b9b9b9;
+}

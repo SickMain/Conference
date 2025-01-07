@@ -5,48 +5,43 @@
 package com.example.conference.configuration;
 
 
-import com.example.conference.repository.UserRepository;
+import ch.qos.logback.core.net.ssl.SSLContextFactoryBean;
+import com.example.conference.repository.user.UserRepository;
 import com.example.conference.user.User;
-import jakarta.servlet.http.HttpServletRequest;
 
+import java.net.http.HttpClient;
 import java.util.Optional;
 
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.boot.autoconfigure.sendgrid.SendGridProperties;
-import org.springframework.cglib.proxy.Proxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.BeanDefinitionDsl;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.web.client.RestTemplate;
 
-/**
- *
- * @author user
- */
+
+
 @Configuration
 public class SecurityConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        
     
-        http
-                .csrf(csrf -> csrf.csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+            http
+                .csrf(csrf -> csrf.csrfTokenRepository(
+                        new HttpSessionCsrfTokenRepository()
+                        )
                 )
                 .formLogin(form -> form
                 .loginPage("/login")
@@ -58,22 +53,23 @@ public class SecurityConfig {
                 .permitAll()
                 )
                 .authorizeHttpRequests(requests -> requests
-                .requestMatchers("/conferences").hasRole("USER")
+                .requestMatchers("/contests/new").hasRole("ADMIN")
                 .requestMatchers("/", "/**").permitAll()
                 );
-
 
         return http.build();
     }
 
     @Bean
     public UserDetailsService webUserDetailsService(UserRepository userRepo) {
-        return username -> {
-            Optional<User> user = userRepo.findByEmail(username);
+        return email -> {
+            Optional<User> user = userRepo.findByEmail(email);
             if (user.isPresent()) {
                 return user.get();
             }
-            throw new UsernameNotFoundException("User ‘" + username + "’ not found");
+            throw new UsernameNotFoundException("User ‘" + email + "’ not found");
         };
     }
+
+
 }

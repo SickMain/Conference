@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/basics :: basicHead (title= ${team.name},js = 'handle.js')}">
+<body>
+<nav th:replace="~{fragments/basics :: navbar}"></nav>
+<!-- Button trigger modal -->
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Пригласить в команду</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input p-2" >
+                    <div class="container mb-3">
+                        <label class="col">Найти пользователя</label>
+                    </div>
+                    <div class="container mb-3">
+                        <form id='userSearchForm' method="POST" th:action="@{/profile/}">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                            <div class="form-group mb-3">
+                                <input id="teamId" th:value="${team.id}" type="hidden">
+                            </div>
+                            <div class="form-group mb-3">
+                                <input  id="w-input-search" required type="text" class="col-9"/><div id="ex"></div>
+                                <div class="input-append align-items-sm-start container col-auto"></div>
+                            </div>
+
+                            <button class="btn btn-outline-primary p-2 col-auto" type="submit">Пригласить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Расформировать команду</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input p-2" >
+                    <div class="container mb-3">
+                        <label class="col">Вы уверены, что хотите расформировать команду?</label>
+                    </div>
+                    <div class="container mb-3">
+                        <form id='deleteTeamForm' method="POST" th:action="@{${'/teams/delete/' + team.getId()}}">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                            <button class="btn btn-outline-danger p-2 col-auto" type="submit">Подтвердить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="container row">
+    <div class="col">
+        <label th:text="${team.name}"></label>
+    </div>
+    <div class="container col ">
+            <div class="row mb-3">
+                <button type="button" class="btn btn-link shadow-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Пригласить в команду
+                </button>
+            </div>
+            <div class="row mb-3">
+                <button type="button" class="btn btn-link shadow-none text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    Расформировать команду
+                </button>
+            </div>
+        <div class="container row">
+            <table class="container">
+                <tr class="row  align-items-center border border-black text-center"><td class="col text-center">Пользователь</td><td class="col text-center">Статус</td><td class="col" >Управление</td></tr>
+                <tr id="leaderInfo" class="row border border-black  align-items-center">
+                    <td class="col row container justify-content-center align-items-center">
+                        <img th:if="${team.leader.profileImg}" class="img-thumbnail row " th:src="@{${'/img/profiles/' + team.leader.profileImg}}"/>
+                        <img th:unless="${team.leader.profileImg}" class="img-thumbnail row " th:src="@{'/img/profiles/unnamed.jpg'}"/>
+                        <label class="">Лидер - <a class="" th:text="${team.leader.username}" th:href="@{${'/profile/' + team.leader.username }}"/></label>
+                        <label th:text="${team.leader.getFullName()}" class=""></label>
+
+                    </td>
+                    <td class="col row container justify-content-center align-items-center ">
+                        <label class="text-center">Активный</label>
+                    </td>
+                    <td class="col row">
+                    </td>
+                </tr>
+                <tr  th:each="userInTeam : ${team.getActiveUsersWithoutLeader()}" class="row border border-black  align-items-center">
+                    <td class="col row container justify-content-center align-items-center">
+                        <img th:if="${userInTeam.user.profileImg}" class="img-thumbnail " th:src="@{${'/img/profiles/' + userInTeam.user.profileImg}}"/>
+                        <img th:unless="${userInTeam.user.profileImg}" class="img-thumbnail " th:src="@{'/img/profiles/unnamed.jpg'}"/>
+                        <div class="container  justify-content-center align-items-center">
+                            <div class="row justify-content-center align-items-center">
+                                <label class="col text-center"><a class="" th:text="${userInTeam.user.username}" th:href="@{${'/profile/' + userInTeam.user.username }}" /></label>
+                            </div>
+                            <div class="row">
+                                <label class="col text-center" th:text="${userInTeam.user.getFullName()}"></label>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="col row container justify-content-center align-items-center ">
+                        <label class="text-center">Активный</label>
+                    </td>
+                    <td class="col row">
+                        <div class="d-grid gap-2 justify-content-md-center">
+                            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteUserFromTeam" th:attr="data-bs-username=${userInTeam.user.username}">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr  th:each="userInTeam : ${team.getInvitedUsersWithoutLeader()}" class="row border border-black  align-items-center">
+                    <td class="col row container justify-content-center align-items-center">
+                        <img th:if="${userInTeam.user.profileImg}" class="img-thumbnail " th:src="@{${'/img/profiles/' + userInTeam.user.profileImg}}"/>
+                        <img th:unless="${userInTeam.user.profileImg}" class="img-thumbnail " th:src="@{'/img/profiles/unnamed.jpg'}"/>
+                        <div class="container  justify-content-center align-items-center">
+                            <div class="row justify-content-center align-items-center">
+                                <label class="col text-center"><a class="" th:text="${userInTeam.user.username}" th:href="@{${'/profile/' + userInTeam.user.username }}" /></label>
+                            </div>
+                            <div class="row">
+                                <label class="col text-center" th:text="${userInTeam.user.getFullName()}"></label>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="col row container justify-content-center align-items-center ">
+                        <label class="text-center">Приглашен</label>
+                    </td>
+                    <td class="col row">
+                        <div class="d-grid gap-2 justify-content-md-center">
+                            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteUserFromTeam" th:attr="data-bs-username=${userInTeam.user.username}">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="deleteUserFromTeam" tabindex="-1" aria-labelledby="deleteUserFromTeamLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserFromTeamLabel">New message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id='deleteUserFromTeamForm' method="POST" th:action="@{${'/teams/excludeUserFromTeam/' + team.getId()}}">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                    <div class="mb-3">
+                        <label id="delete-msg" >Вы уверены, что хотите исключить пользователя</label>
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-outline-danger p-2 col-auto" type="submit">Исключить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/basics :: alerts}"></div>
+</body>
+</html>
+<style>
+    .input-append {
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+        /* add padding to account for vertical scrollbar */
+        max-height: 150px;
+
+    }
+</style>
+<script>
+    var deleteUserFromTeamModal = document.getElementById('deleteUserFromTeam')
+    deleteUserFromTeamModal.addEventListener('show.bs.modal', function (event) {
+
+        var button = event.relatedTarget
+
+        var recipient = button.getAttribute('data-bs-username')
+
+        var modalTitle = deleteUserFromTeamModal.querySelector('.modal-title')
+        var modalBodyForm = deleteUserFromTeamModal.querySelector('.modal-body #deleteUserFromTeamForm')
+        var msgDelete = deleteUserFromTeamModal.querySelector('.modal-body #delete-msg')
+
+
+        modalBodyForm.action = window.location.protocol+ "//" + window.location.host + '/teams/excludeUserFromTeam/' + document.getElementById('teamId').value + '/' + recipient
+        msgDelete.textContent = 'Вы уверены, что хотите исключить пользователя ' + recipient + ' ?'
+        modalTitle.textContent = 'Исключить пользователя из команды'
+
+    })
+</script>

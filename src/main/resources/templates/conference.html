@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/basics :: basicHead (title= ${conference.name} ,js = 'confReg.js')}">
+<body>
+<nav th:replace="~{fragments/basics :: navbar}"></nav>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Выберите команду</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body " >
+                <div class="input p-2" >
+                    <div class="container mb-3">
+                        <label for="teamNameInput">Название команды:</label>
+                        <input id="teamNameInput" class="form-control w-50" type="text" value="Выберите команду из списка" aria-label="Disabled input example" disabled readonly>
+                    </div>
+                    <div class="container mb-3">
+                        <form id='userSearchForm' method="POST" th:action="@{/contests/view/registerTeam}">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                            <div class="dropend  mb-3">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Выбор команды
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li th:each="team : ${currentUserTeamList}"><a class="dropdown-item" th:attr="chosenteamid=${team.id}" th:text="${team.name}" href="#">Действие</a></li>
+                                </ul>
+                            </div>
+                            <input type="hidden" id="chosenTeamId" name="chosenTeamId">
+                            <input type="hidden" th:value="${conference.id}" id="conferenceId" name="conferenceId">
+                            <button class="btn btn-outline-primary p-2 col-auto" type="submit">Зарегистрировать команду</button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<div class="p-3">
+    <div class="container">
+        <ul class="list-inline ">
+            <li class="list-inline-item"><a th:href="@{'/contests/view/' + ${conference.id}}">Запись</a></li>
+            <li class="list-inline-item"><a th:href="@{'/contests/standings/' + ${conference.id}}">Положение</a></li>
+        </ul>
+    </div>
+    <div class="container border " th:object="${conference}">
+        <div class="row">
+            <h4 th:text="*{name}"></h4>
+        </div>
+        <div class="row">
+            <label class="text-primary">Описание:</label>
+            <p th:text="*{description}"></p>
+        </div>
+        <div class="row">
+            <label class="text-primary" th:unless="*{getCriteriaSet().isEmpty()}">Критерии оценивания:</label>
+            <ol class="list-group list-group-numbered w-auto" >
+                <li th:each="criteria : *{getCriteriaSet()}" class="list-group-item" th:text="${criteria.name}"></li>
+            </ol>
+        </div>
+        <div sec:authorize="hasRole('USER')" th:unless="${conference.registrationClosing.isBefore(currentDateTime)}" class="row">
+            <button type="button" class="btn btn-link shadow-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Зарегистрироваться
+            </button>
+        </div>
+    </div>
+
+</div>
+<div th:replace="~{fragments/basics :: alerts}"></div>
+</body>
+</html>

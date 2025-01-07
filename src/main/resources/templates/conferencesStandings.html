@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/basics :: basicHead (title= ${conference.name} ,js = 'confReg.js')}">
+<body>
+<nav th:replace="~{fragments/basics :: navbar}"></nav>
+
+<div class="p-3">
+    <div class="container">
+        <ul class="list-inline ">
+            <li class="list-inline-item"><a th:href="@{'/contests/view/' + ${conference.id}}">Запись</a></li>
+            <li class="list-inline-item"><a th:href="@{'/contests/standings/' + ${conference.id}}">Положение</a></li>
+        </ul>
+    </div>
+    <div class="container border " th:object="${conference}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Название команды</th>
+                <th class="text-center">=</th>
+                <th class="text-center" th:each="criteria:${conference.criteriaSet}" th:text="${criteria.name}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="teamRecord :${standings}">
+                <td ><a th:href="@{${'/team/record/view/'+teamRecord.id}}" th:text="${teamRecord.name}"></a></td>
+                <td class="text-center" th:text="${teamRecord.summaryMark}"></td>
+                <td class="text-center" th:each="criteriaMark: ${teamRecord.criteriaMarks}" th:text="${criteriaMark.getMark()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<div th:replace="~{fragments/basics :: alerts}"></div>
+</body>
+</html>

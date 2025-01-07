@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="~{fragments/basics :: basicHead (title='Error',js = 'handle.js')}">
+<body>
+<div class="vh-100 d-flex align-content-center flex-wrap">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-12 text-center">
+        <span class="display-1 d-block">404</span>
+        <div class="mb-4 lead">Не удалось найти страницу</div>
+        <a th:href="@{/}" class="btn btn-link">На главную</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
