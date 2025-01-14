@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragments/basics :: basicHead (title='Teams with - ' + ${user.username})}">
+<head th:replace="~{shared/ui/basics :: basicHead (title='Teams with - ' + ${user.username})}">
 
 <body>
-<nav th:replace="~{fragments/basics :: navbar}"></nav>
+<nav th:replace="~{shared/ui/basics :: navbar}"></nav>
 <div id="userBox" class="p-3">
     <div class="container">
         <ul class="list-inline">
@@ -59,7 +59,7 @@
 
     </div>
 </div>
-<div th:replace="~{fragments/basics :: alerts}"></div>
+<div th:replace="~{shared/ui/basics :: alerts}"></div>
 </body>
 </html>
 <style>

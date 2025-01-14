@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/basics :: basicHead (title='Login')}">
+<head th:replace="~{shared/ui/basics :: basicHead (title='Login')}">
 <body>
-<nav th:replace="~{fragments/basics :: navbar}"></nav>
+<nav th:replace="~{shared/ui/basics :: navbar}"></nav>
 <div class="card position-absolute border-secondary   top-50 start-50 translate-middle" style="width: 400px">
     <div class="card-header bg-primary  rounded-top"></div>
     <form method="POST" class="card-body " th:action="@{/login}">
@@ -29,6 +29,6 @@
         </div>
     </form>
 </div>
-<div th:replace="~{fragments/basics :: alerts}"></div>
+<div th:replace="~{shared/ui/basics :: alerts}"></div>
 </body>
 </html>

@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragments/basics :: basicHead (title='New team')}">
+<head th:replace="~{shared/ui/basics :: basicHead (title='New team')}">
     <body>
-    <nav th:replace="~{fragments/basics :: navbar}"></nav>
+    <nav th:replace="~{shared/ui/basics :: navbar}"></nav>
         <div class="card border-secondary position-absolute top-50 start-50 translate-middle" style="width: 400px">
             <div class="card-header bg-primary rounded-top"></div>
             <form method="POST" class="card-body" th:object="${newTeamForm}">
@@ -20,6 +20,6 @@
                 </div>
             </form>
         </div>
-    <div th:replace="~{fragments/basics :: alerts}"></div>
+    <div th:replace="~{shared/ui/basics :: alerts}"></div>
     </body>
 </html>

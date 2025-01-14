@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragments/basics :: basicHead (title=${teamRecord.name})}">
+<head th:replace="~{shared/ui/basics :: basicHead (title=${teamRecord.name})}">
 <body>
-<nav th:replace="~{fragments/basics :: navbar}"></nav>
+<nav th:replace="~{shared/ui/basics :: navbar}"></nav>
 <div sec:authorize="hasRole('ADMIN')" class="modal fade" id="deleteTeam" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -71,7 +71,7 @@
     </div>
 </div>
 </div>
-<div th:replace="~{fragments/basics :: alerts}"></div>
+<div th:replace="~{shared/ui/basics :: alerts}"></div>
 </body>
 </html>
 <style>

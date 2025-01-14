@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragments/basics :: basicHead (title= ${conference.name} ,js = 'confReg.js')}">
+<head th:replace="~{shared/ui/basics :: basicHead (title= ${conference.name} ,js = 'confReg.js')}">
 <body>
-<nav th:replace="~{fragments/basics :: navbar}"></nav>
+<nav th:replace="~{shared/ui/basics :: navbar}"></nav>
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content ">
@@ -74,6 +74,6 @@
     </div>
 
 </div>
-<div th:replace="~{fragments/basics :: alerts}"></div>
+<div th:replace="~{shared/ui/basics :: alerts}"></div>
 </body>
 </html>
